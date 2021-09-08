@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Product } from './product.interface';
@@ -19,6 +20,39 @@ export class ProductsService extends ApiService {
 
     const url = this.getUrl('bff', 'products');
     return this.http.get<Product[]>(url);
+  }
+
+  getProductById(id: string | null): Observable<Product> {
+    if (!this.endpointEnabled('bff')) {
+      console.warn(
+        'Endpoint "bff" is disabled. To enable change your environment.ts config'
+      );
+      return this.http.get<Product>(PRODUCTS_URL + `/${id}`);
+    }
+
+    const url = this.getUrl('bff', 'products');
+    return this.http.get<Product>(url + `/${id}`);
+  }
+
+  createProduct(product: Omit<Product, 'id'>): Observable<Pick<Product, 'id'>> {
+    const options = {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*',
+      },
+    };
+    if (!this.endpointEnabled('bff')) {
+      console.warn(
+        'Endpoint "bff" is disabled. To enable change your environment.ts config'
+      );
+      return this.http.post<Pick<Product, 'id'>>(
+        PRODUCTS_URL,
+        product,
+        options
+      );
+    }
+    const url = this.getUrl('bff', 'products');
+    return this.http.post<Pick<Product, 'id'>>(url, product, options);
   }
 
   getProductsForCheckout(ids: string[]): Observable<Product[]> {
