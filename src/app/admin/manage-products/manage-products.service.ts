@@ -29,12 +29,21 @@ export class ManageProductsService extends ApiService {
     );
   }
 
+  private getTokenFromLocalStorage(): string {
+    const token = localStorage.getItem('authorization_token');
+    return token ? token : '';
+  }
+
   private getPreSignedUrl(fileName: string): Observable<string> {
     const url = this.getUrl('import', 'import');
 
     return this.http.get<string>(url, {
       params: {
         name: fileName,
+      },
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Authorization: this.getTokenFromLocalStorage(),
       },
     });
   }
