@@ -1,11 +1,15 @@
 import { Injectable, Injector } from '@angular/core';
-import { EMPTY, Observable } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { ApiService } from '../../core/api.service';
-import { switchMap } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
+import { NotificationService } from '../../core/notification.service';
 
 @Injectable()
 export class ManageProductsService extends ApiService {
-  constructor(injector: Injector) {
+  constructor(
+    injector: Injector,
+    private readonly notificationService: NotificationService
+  ) {
     super(injector);
   }
 
@@ -25,7 +29,12 @@ export class ManageProductsService extends ApiService {
             'Content-Type': 'text/csv',
           },
         })
-      )
+      ),
+      // eslint-disable-next-line rxjs/no-implicit-any-catch
+      catchError((response: { error: Error }) => {
+        this.notificationService.showError(response.error.message);
+        return of(null);
+      })
     );
   }
 
