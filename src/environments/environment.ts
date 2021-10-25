@@ -11,14 +11,14 @@ export const environment: Config = {
     order: 'change this',
     import: 'https://mho7rusxod.execute-api.eu-west-1.amazonaws.com/dev',
     bff: 'change this',
-    cart: 'change this',
+    cart: 'http://kastrubait-cart-api-dev.eu-west-1.elasticbeanstalk.com/',
   },
   apiEndpointsEnabled: {
     product: true,
     order: false,
     import: true,
     bff: false,
-    cart: false,
+    cart: true,
   },
 };
 
